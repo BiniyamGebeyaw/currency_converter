@@ -1,0 +1,269 @@
+/* CurrencyConverter — standalone stylesheet */
+
+.cc-wrapper {
+  width: 100%;
+}
+
+.cc-card {
+  border-radius: 1rem;
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(6px);
+  border: 1px solid rgba(231, 229, 228, 0.8);
+  box-shadow: 0 10px 30px -10px rgba(6, 78, 59, 0.08);
+  padding: 1.5rem;
+}
+@media (min-width: 640px) {
+  .cc-card { padding: 2rem; }
+}
+
+.cc-label {
+  display: block;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  color: #78716c;
+  margin-bottom: 0.5rem;
+}
+
+.cc-amount-input {
+  width: 100%;
+  border-radius: 0.75rem;
+  border: 1px solid #e7e5e4;
+  background: rgba(250, 250, 249, 0.6);
+  padding: 0.875rem 1rem;
+  font-size: 1.5rem;
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  color: #1c1917;
+  outline: none;
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+.cc-amount-input::placeholder { color: #d6d3d1; }
+.cc-amount-input:hover { border-color: #d6d3d1; }
+.cc-amount-input:focus {
+  border-color: #10b981;
+  box-shadow: 0 0 0 2px rgba(16, 185, 129, 0.2);
+}
+
+.cc-pair {
+  margin-top: 1.5rem;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.75rem;
+  align-items: end;
+}
+@media (min-width: 640px) {
+  .cc-pair {
+    grid-template-columns: 1fr auto 1fr;
+    gap: 1rem;
+  }
+}
+
+.cc-select-group { min-width: 0; }
+
+.cc-select-wrapper {
+  position: relative;
+}
+.cc-select-flag {
+  position: absolute;
+  left: 1rem;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 1.25rem;
+  pointer-events: none;
+}
+.cc-select {
+  width: 100%;
+  appearance: none;
+  border-radius: 0.75rem;
+  border: 1px solid #e7e5e4;
+  background: rgba(250, 250, 249, 0.6);
+  padding: 0.875rem 2.5rem 0.875rem 3rem;
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: #1c1917;
+  outline: none;
+  transition: border-color 0.15s, box-shadow 0.15s;
+  cursor: pointer;
+}
+.cc-select:hover { border-color: #d6d3d1; }
+.cc-select:focus {
+  border-color: #10b981;
+  box-shadow: 0 0 0 2px rgba(16, 185, 129, 0.2);
+}
+.cc-select-caret {
+  position: absolute;
+  right: 1rem;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #a8a29e;
+  pointer-events: none;
+}
+
+.cc-swap-desktop {
+  display: none;
+}
+@media (min-width: 640px) {
+  .cc-swap-desktop {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    align-self: end;
+    height: 52px;
+    width: 52px;
+    border-radius: 0.75rem;
+    background: #ecfdf5;
+    border: 1px solid #a7f3d0;
+    color: #047857;
+    cursor: pointer;
+    transition: background 0.15s, transform 0.25s;
+  }
+  .cc-swap-desktop:hover { background: #d1fae5; transform: rotate(180deg); }
+  .cc-swap-desktop:active { transform: scale(0.95); }
+}
+
+.cc-swap-mobile {
+  margin-top: 0.75rem;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  border-radius: 0.75rem;
+  background: #ecfdf5;
+  border: 1px solid #a7f3d0;
+  color: #047857;
+  padding: 0.625rem 0;
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.15s, transform 0.05s;
+}
+@media (min-width: 640px) {
+  .cc-swap-mobile { display: none; }
+}
+.cc-swap-mobile:hover { background: #d1fae5; }
+.cc-swap-mobile:active { transform: scale(0.98); }
+
+.cc-result {
+  margin-top: 1.75rem;
+  border-radius: 1rem;
+  background: linear-gradient(135deg, #064e3b, #047857);
+  padding: 1.5rem;
+  color: #fff;
+  position: relative;
+  overflow: hidden;
+}
+@media (min-width: 640px) {
+  .cc-result { padding: 1.75rem; }
+}
+.cc-result-bg-icon {
+  position: absolute;
+  right: -2rem;
+  top: -2rem;
+  opacity: 0.1;
+}
+.cc-result-content { position: relative; }
+.cc-result-label {
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.22em;
+  color: rgba(167, 243, 208, 0.9);
+  margin: 0;
+}
+.cc-result-value {
+  margin: 0.5rem 0 0;
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 2.5rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  font-variant-numeric: tabular-nums;
+}
+@media (min-width: 640px) {
+  .cc-result-value { font-size: 3rem; }
+}
+.cc-result-detail {
+  margin: 0.75rem 0 0;
+  font-size: 0.875rem;
+  color: rgba(209, 250, 229, 0.85);
+}
+
+.cc-glance {
+  margin-top: 1.5rem;
+  border-radius: 1rem;
+  background: rgba(255, 255, 255, 0.6);
+  border: 1px solid rgba(231, 229, 228, 0.7);
+  padding: 1.5rem;
+}
+@media (min-width: 640px) {
+  .cc-glance { padding: 1.75rem; }
+}
+.cc-glance-header {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+  color: #d97706;
+}
+.cc-glance-header h2 {
+  margin: 0;
+  font-size: 0.875rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  color: #57534e;
+}
+.cc-glance-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0.75rem;
+}
+@media (min-width: 640px) {
+  .cc-glance-grid { grid-template-columns: repeat(4, 1fr); }
+}
+.cc-glance-item {
+  border-radius: 0.75rem;
+  border: 1px solid #e7e5e4;
+  background: rgba(250, 250, 249, 0.5);
+  padding: 1rem;
+  transition: border-color 0.15s, box-shadow 0.15s, background 0.15s;
+}
+.cc-glance-item-active {
+  border-color: #fbbf24;
+  background: #fffbeb;
+  box-shadow: 0 0 0 2px rgba(252, 211, 77, 0.4);
+}
+.cc-glance-item-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.cc-glance-code {
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  color: #78716c;
+}
+.cc-glance-flag { font-size: 1rem; }
+.cc-glance-value {
+  margin: 0.5rem 0 0;
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 1.125rem;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  color: #1c1917;
+}
+.cc-glance-note {
+  margin: 1rem 0 0;
+  font-size: 0.75rem;
+  line-height: 1.5;
+  color: #a8a29e;
+}
+.cc-glance-note code {
+  padding: 0.125rem 0.25rem;
+  border-radius: 0.25rem;
+  background: #f5f5f4;
+  color: #57534e;
+}
+.cc-glance-note em { font-style: italic; }
