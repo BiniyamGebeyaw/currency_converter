@@ -12,7 +12,7 @@ function App() {
               <p className="brand-sub">live currency converter</p>
             </div>
           </div>
-          <span className="header-codes">USD · EUR · GBP · JPY</span>
+          <span className="header-codes">USD · EUR · GBP · JPY · ETB · CNY · INR · SAR</span>
         </div>
       </header>
 
@@ -35,8 +35,7 @@ function App() {
 
       <footer className="footer">
         <div className="footer-inner">
-          <p>Built with React · useMemo keeps it snappy</p>
-          <p>Rates are illustrative snapshots, not for trading.</p>
+          <p>Rates are from open.er-api.com · for reference only.</p>
         </div>
       </footer>
     </div>

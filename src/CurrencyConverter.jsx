@@ -1,25 +1,32 @@
-import { useMemo, useState } from 'react'
-import { ArrowRightLeft, Coins, TrendingUp } from 'lucide-react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
+import { ArrowRightLeft, Coins, RefreshCw, TrendingUp } from 'lucide-react'
 import './currency-converter.css'
 
-/**
- * Exchange rates expressed as "units of this currency per 1 USD".
- * Values are illustrative snapshots — NOT a one-to-one mapping.
- */
-const RATES = {
+const API_URL = 'https://open.er-api.com/v6/latest/USD'
+
+// Used before the API responds, and if the API fails.
+const FALLBACK_RATES = {
   USD: 1,
   EUR: 0.92,
   GBP: 0.78,
-  JPY: 156.7
+  JPY: 156.7,
+  ETB: 150,
+  CNY: 7.2,
+  INR: 84,
+  SAR: 3.75
 }
 
-const CURRENCIES = Object.keys(RATES)
+const CURRENCIES = Object.keys(FALLBACK_RATES)
 
 const CURRENCY_META = {
   USD: { name: 'US Dollar', symbol: '$', flag: '🇺🇸' },
   EUR: { name: 'Euro', symbol: '€', flag: '🇪🇺' },
   GBP: { name: 'British Pound', symbol: '£', flag: '🇬🇧' },
-  JPY: { name: 'Japanese Yen', symbol: '¥', flag: '🇯🇵' }
+  JPY: { name: 'Japanese Yen', symbol: '¥', flag: '🇯🇵' },
+  ETB: { name: 'Ethiopian Birr', symbol: 'Br', flag: '🇪🇹' },
+  CNY: { name: 'Chinese Yuan', symbol: '¥', flag: '🇨🇳' },
+  INR: { name: 'Indian Rupee', symbol: '₹', flag: '🇮🇳' },
+  SAR: { name: 'Saudi Riyal', symbol: 'SR', flag: '🇸🇦' }
 }
 
 export default function CurrencyConverter() {
@@ -27,21 +34,51 @@ export default function CurrencyConverter() {
   const [fromCurrency, setFromCurrency] = useState('USD')
   const [toCurrency, setToCurrency] = useState('EUR')
 
-  /**
-   * Memoized converted-amount table.
-   *
-   * Dependency array intentionally EXCLUDES `toCurrency` so that changing
-   * the "to" select never recalculates the from-currency conversions —
-   * it just selects a different entry from the cached table.
-   */
-  const convertedAmounts = useMemo(() => {
-    const amountInBase = amount / RATES[fromCurrency]
-    const result = {}
+  const [rates, setRates] = useState(FALLBACK_RATES)
+const [status, setStatus] = useState('loading') // 'loading' | 'live' | 'error'
+const [lastUpdated, setLastUpdated] = useState(null)
+
+const fetchRates = useCallback(async (signal) => {
+  setStatus('loading')
+  try {
+    const res = await fetch(API_URL, { signal })
+    if (!res.ok) throw new Error(`HTTP ${res.status}`)
+
+    const data = await res.json()
+    if (data.result !== 'success') throw new Error('API returned an error')
+
+
+    const next = {}
     for (const code of CURRENCIES) {
-      result[code] = amountInBase * RATES[code]
+      next[code] =
+        typeof data.rates[code] === 'number' ? data.rates[code] : FALLBACK_RATES[code]
     }
-    return result
-  }, [amount, fromCurrency])
+
+    setRates(next)
+    setLastUpdated(data.time_last_update_utc)
+    setStatus('live')
+  } catch (err) {
+    if (err.name === 'AbortError') return
+    console.error('Failed to fetch rates:', err)
+    setStatus('error')
+  }
+}, [])
+
+// Fetch once when the component first appears.
+useEffect(() => {
+  const controller = new AbortController()
+  fetchRates(controller.signal)
+  return () => controller.abort()
+}, [fetchRates])
+
+const convertedAmounts = useMemo(() => {
+  const amountInBase = amount / rates[fromCurrency]
+  const result = {}
+  for (const code of CURRENCIES) {
+    result[code] = amountInBase * rates[code]
+  }
+  return result
+}, [amount, fromCurrency, rates])
 
   const convertedAmount = convertedAmounts[toCurrency] ?? 0
   const formattedAmount = convertedAmount.toFixed(2)
@@ -80,8 +117,25 @@ export default function CurrencyConverter() {
           onChange={handleAmountChange}
           className="cc-amount-input"
         />
+        <div className="cc-status">
+  <span className={`cc-status-dot cc-status-${status}`} />
+  <span className="cc-status-text">
+    {status === 'loading' && 'Fetching latest rates…'}
+    {status === 'live' && `Live rates · updated ${new Date(lastUpdated).toLocaleString()}`}
+    {status === 'error' && 'Could not load live rates — showing saved estimates'}
+  </span>
+  <button
+    type="button"
+    className="cc-refresh"
+    onClick={() => fetchRates()}
+    disabled={status === 'loading'}
+    aria-label="Refresh rates"
+  >
+    <RefreshCw size={14} className={status === 'loading' ? 'cc-spin' : ''} />
+  </button>
+</div>
 
-        {/* From / To selects */}
+       
         <div className="cc-pair">
           <div className="cc-select-group">
             <label htmlFor="cc-from" className="cc-label">From</label>
@@ -103,7 +157,6 @@ export default function CurrencyConverter() {
             </div>
           </div>
 
-          {/* Swap button (desktop) */}
           <button
             type="button"
             onClick={handleSwap}
@@ -134,7 +187,7 @@ export default function CurrencyConverter() {
           </div>
         </div>
 
-        {/* Swap (mobile) */}
+       
         <button
           type="button"
           onClick={handleSwap}
@@ -164,7 +217,7 @@ export default function CurrencyConverter() {
         </div>
       </div>
 
-      {/* Memoized reference table — all conversions from the "from" currency */}
+     
       <div className="cc-glance">
         <div className="cc-glance-header">
           <Coins size={16} />

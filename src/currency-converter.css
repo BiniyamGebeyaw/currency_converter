@@ -1,4 +1,4 @@
-/* CurrencyConverter — standalone stylesheet */
+
 
 .cc-wrapper {
   width: 100%;
@@ -267,3 +267,41 @@
   color: #57534e;
 }
 .cc-glance-note em { font-style: italic; }
+
+.cc-status {
+  margin-top: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.75rem;
+  color: #78716c;
+}
+.cc-status-text { flex: 1; }
+
+.cc-status-dot {
+  width: 0.5rem;
+  height: 0.5rem;
+  border-radius: 50%;
+  background: #a8a29e;
+}
+.cc-status-live { background: #10b981; }
+.cc-status-error { background: #ef4444; }
+.cc-status-loading { background: #f59e0b; }
+
+.cc-refresh {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.75rem;
+  height: 1.75rem;
+  border-radius: 0.5rem;
+  border: 1px solid #e7e5e4;
+  background: #fafaf9;
+  color: #57534e;
+  cursor: pointer;
+}
+.cc-refresh:hover:not(:disabled) { background: #ecfdf5; border-color: #a7f3d0; }
+.cc-refresh:disabled { opacity: 0.5; cursor: default; }
+
+.cc-spin { animation: cc-spin 1s linear infinite; }
+@keyframes cc-spin { to { transform: rotate(360deg); } }
